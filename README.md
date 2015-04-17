@@ -10,9 +10,9 @@ Note that OBINDEX is research code. The authors are not responsible for any erro
 
 Our approach is detailed in:
 
-**On the Use of Binary Feature Descriptors for Loop Closure Detection**...
-Emilio Garcia-Fidalgo and Alberto Ortiz...
-IEEE International Conference on Emerging Technologies and Factory Automation (ETFA)...
+**On the Use of Binary Feature Descriptors for Loop Closure Detection**     
+Emilio Garcia-Fidalgo and Alberto Ortiz     
+IEEE International Conference on Emerging Technologies and Factory Automation (ETFA)     
 Barcelona (Spain), 2014
 
 The paper can be downloaded from: http://emiliofidalgo.github.io/static/papers/conf_ETFA_Garcia2014.pdf
