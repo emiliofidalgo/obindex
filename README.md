@@ -41,8 +41,8 @@ OBINDEX is distributed under the terms of the [BSD License] (http://github.com/e
 
 2. Clone the repository into your workspace:
 	
-	`cd ~/your_workspace/src`   
-	`git clone git@github.com:emiliofidalgo/obindex.git`   
+	`cd ~/your_workspace/src`
+    `git clone https://github.com/emiliofidalgo/obindex.git`   
 
 3. Compile the package using `catkin_make`:
 	
