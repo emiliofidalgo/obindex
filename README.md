@@ -35,19 +35,19 @@ OBINDEX is distributed under the terms of the [BSD License] (http://github.com/e
 
 1. First of all, you will need to have installed all library dependencies:
 
-	`sudo apt-get install libflann-dev   
-	sudo apt-get install libboost-system-dev   
-	sudo apt-get install libboost-filesystem-dev`   
+	`sudo apt-get install libflann-dev`   
+	`sudo apt-get install libboost-system-dev`   
+	`sudo apt-get install libboost-filesystem-dev`   
 
 2. Clone the repository into your workspace:
 	
-	`cd ~/your_workspace/src   
-	git clone https://github.com/emiliofidalgo/obindex.git`   
+	`cd ~/your_workspace/src`   
+	`git clone https://github.com/emiliofidalgo/obindex.git`   
 
 3. Compile the package using `catkin_make`:
 	
-	`cd ..   
-	catkin_make -DCMAKE_BUILD_TYPE=Release`   
+	`cd ..`   
+	`catkin_make -DCMAKE_BUILD_TYPE=Release`   
 
 4. You can run an example:
 	
