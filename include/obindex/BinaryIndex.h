@@ -106,6 +106,7 @@ public:
 
     void add(const int image_id, const std::vector<cv::KeyPoint>& kps, const cv::Mat& descs);
     void update(const int image_id, const std::vector<cv::KeyPoint>& kps, const cv::Mat& descs, const std::vector<cv::DMatch>& matches);
+    void addToInvertedIndex(const int image_id, const std::vector<cv::KeyPoint>& kps, const std::vector<cv::DMatch>& matches);
     double search(const cv::Mat& qdescs, std::vector<std::vector<cv::DMatch> >& matches, const int knn = 2);
     double getSimilarImages(const cv::Mat& qimage, const std::vector<cv::DMatch>& gmatches, std::vector<ImageMatch>& img_matches);
     void remove(const unsigned int desc_id);
