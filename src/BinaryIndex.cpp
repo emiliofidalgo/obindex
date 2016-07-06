@@ -334,4 +334,31 @@ void BinaryIndex::_copyDescriptors(const cv::Mat &descs)
     }
 }
 
+unsigned char BinaryIndex::_countOnes(unsigned char x)
+{
+	unsigned char results;
+	results = oneBits[x&0x0f];
+	results += oneBits[x>>4];
+	return results;
+}
+
+void BinaryIndex::saveDescriptorsInfo(const std::string file)
+{
+	std::ofstream file_descinfo;
+	file_descinfo.open(file.c_str(), std::ios::out | std::ios::trunc);
+	for (int i = 0; i < _feat_index->size(); i++)
+	{
+		int total_ones = 0;
+		unsigned char c;
+		const uchar* desc = _feat_index->getPoint(i);
+		for (int j = 0; j < _desc_bytes; j++)
+		{
+			c = desc[j];
+			total_ones += _countOnes(c);
+		}
+		file_descinfo << (_desc_bytes * 8) - total_ones << " " << total_ones << std::endl;
+	}
+	file_descinfo.close();
+}
+
 }
