@@ -1,7 +1,7 @@
 /**
  * File: example.cpp
  * Date: April 2015
- * Author: Emilio Garcia-Fidalgo 
+ * Author: Emilio Garcia-Fidalgo
  * License: see the LICENSE file.
  */
 
@@ -11,6 +11,7 @@
 
 #include <boost/filesystem.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/xfeatures2d.hpp>
 
 #include "obindex/BinaryIndex.h"
 
@@ -58,8 +59,8 @@ int main(int argc, char** argv)
     int nimages = filenames.size();
 
     // Other binary descriptors could be used.
-    cv::FastFeatureDetector detector;
-    cv::BriefDescriptorExtractor extractor;
+    cv::Ptr<cv::FastFeatureDetector> detector = cv::FastFeatureDetector::create();
+    cv::Ptr<cv::xfeatures2d::BriefDescriptorExtractor> extractor = cv::xfeatures2d::BriefDescriptorExtractor::create();
 
 	// Set the parameters according to your needs. See BinaryIndex.h for more information.
 	vi::BinaryIndexParams params;
@@ -73,8 +74,8 @@ int main(int argc, char** argv)
     std::vector<cv::KeyPoint> kps0;
     cv::Mat dscs0;
     cv::Mat image0 = cv::imread(filenames[0]);
-    detector.detect(image0, kps0);
-    extractor.compute(image0, kps0, dscs0);
+    detector->detect(image0, kps0);
+    extractor->compute(image0, kps0, dscs0);
     cv::KeyPointsFilter::retainBest(kps0, 1000);
 	// Adding the image to the index.
 	index.add(0, kps0, dscs0);
@@ -87,12 +88,12 @@ int main(int argc, char** argv)
         std::vector<cv::KeyPoint> kps;
         cv::Mat dscs;
         cv::Mat image = cv::imread(filenames[i]);
-        detector.detect(image, kps);
-        extractor.compute(image, kps, dscs);
+        detector->detect(image, kps);
+        extractor->compute(image, kps, dscs);
         cv::KeyPointsFilter::retainBest(kps, 1000);
 
         // Matching the images
-        std::vector<std::vector<cv::DMatch> > matches_feats;        
+        std::vector<std::vector<cv::DMatch> > matches_feats;
 
 		// Searching the query descriptors against the features.
         index.search(dscs, matches_feats, 2);
@@ -119,7 +120,7 @@ int main(int argc, char** argv)
 
         std::cout << "Total features found in the image: " << kps.size() << std::endl;
         std::cout << "Total matches found against the index: " << matches.size() << std::endl;
-        std::cout << "Total index size BEFORE UPDATE: " << index.size() << std::endl;        
+        std::cout << "Total index size BEFORE UPDATE: " << index.size() << std::endl;
 		// Updating the index. Matched descriptors are used to update the index and the remaining ones are added as a new descriptors.
         index.update(i, kps, dscs, matches);
         std::cout << "Total index size AFTER UPDATE: " << index.size() << std::endl;
