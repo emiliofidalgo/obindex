@@ -11,6 +11,7 @@
 #include <cfloat>
 #include <cmath>
 #include <iostream>
+#include <fstream>
 #include <map>
 
 #include <flann/flann.hpp>
@@ -98,6 +99,8 @@ struct ImageMatch
     bool operator<(const ImageMatch &lcr) const { return score > lcr.score; }
 };
 
+const unsigned char oneBits[] = {0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4};
+
 class BinaryIndex
 {
 public:
@@ -106,11 +109,13 @@ public:
 
     void add(const int image_id, const std::vector<cv::KeyPoint>& kps, const cv::Mat& descs);
     void update(const int image_id, const std::vector<cv::KeyPoint>& kps, const cv::Mat& descs, const std::vector<cv::DMatch>& matches);
+    void addToInvertedIndex(const int image_id, const std::vector<cv::KeyPoint>& kps, const std::vector<cv::DMatch>& matches);
     double search(const cv::Mat& qdescs, std::vector<std::vector<cv::DMatch> >& matches, const int knn = 2);
     double getSimilarImages(const cv::Mat& qimage, const std::vector<cv::DMatch>& gmatches, std::vector<ImageMatch>& img_matches);
     void remove(const unsigned int desc_id);
     void rebuild();
     unsigned size();
+	void saveDescriptorsInfo(const std::string file);
 
 private:
     bool _init;
@@ -132,6 +137,7 @@ private:
     void _initIndex( const int image_id, const std::vector<cv::KeyPoint>& kps, const cv::Mat& descs);
     void _updateDescriptors(const int image_id, const std::vector<cv::KeyPoint>& kps, const cv::Mat& descs, const std::vector<cv::DMatch>& matches);
     void _copyDescriptors(const cv::Mat& descs);
+	unsigned char _countOnes(unsigned char x);
 };
 
 }

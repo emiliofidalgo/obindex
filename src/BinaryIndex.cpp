@@ -70,24 +70,42 @@ void BinaryIndex::add(const int image_id, const std::vector<cv::KeyPoint>& kps, 
     _total_images++;
 }
 
+void BinaryIndex::addToInvertedIndex(const int image_id, const std::vector<cv::KeyPoint>& kps, const std::vector<cv::DMatch>& matches)
+{
+	for (size_t match_ind = 0; match_ind < matches.size(); match_ind++)
+	{   
+		int qindex = matches[match_ind].queryIdx;
+		int tindex = matches[match_ind].trainIdx;
+
+		// Adding an entry to the inverse index.
+		InvertedIndexEntry inv_entry;
+		inv_entry.image_id = image_id;
+		inv_entry.distance = matches[match_ind].distance;
+		inv_entry.coords = kps[qindex].pt;
+		inv_entry.orig_feat_id = qindex;
+		_inv_index[tindex].push_back(inv_entry);
+	}
+	_total_images++;
+}
+
 void BinaryIndex::update(const int image_id, const std::vector<cv::KeyPoint>& kps, const cv::Mat& descs, const std::vector<cv::DMatch>& matches)
 {
-    // Updating the visual descriptors found in the index according to the matches
-    _updateDescriptors(image_id, kps, descs, matches);
+	// Updating the visual descriptors found in the index according to the matches
+	_updateDescriptors(image_id, kps, descs, matches);
 
-    // All features.
-    std::set<int> points;
-    for (size_t feat_ind = 0; feat_ind < kps.size(); feat_ind++)
-    {
-        points.insert(feat_ind);
-    }
+	// All features.
+	std::set<int> points;
+	for (size_t feat_ind = 0; feat_ind < kps.size(); feat_ind++)
+	{
+		points.insert(feat_ind);
+	}
 
-    // Matched features.
-    std::set<int> matched_points;
-    for (size_t match_ind = 0; match_ind < matches.size(); match_ind++)
-    {
-        matched_points.insert(matches[match_ind].queryIdx);
-    }
+	// Matched features.
+	std::set<int> matched_points;
+	for (size_t match_ind = 0; match_ind < matches.size(); match_ind++)
+	{
+		matched_points.insert(matches[match_ind].queryIdx);
+	}
 
     // Computing the difference.
     std::set<int> diff;
@@ -314,6 +332,33 @@ void BinaryIndex::_copyDescriptors(const cv::Mat &descs)
         descs.row(i).copyTo(_descriptors.row(_next_desc_pos));
         _next_desc_pos++;
     }
+}
+
+unsigned char BinaryIndex::_countOnes(unsigned char x)
+{
+	unsigned char results;
+	results = oneBits[x&0x0f];
+	results += oneBits[x>>4];
+	return results;
+}
+
+void BinaryIndex::saveDescriptorsInfo(const std::string file)
+{
+	std::ofstream file_descinfo;
+	file_descinfo.open(file.c_str(), std::ios::out | std::ios::trunc);
+	for (int i = 0; i < _feat_index->size(); i++)
+	{
+		int total_ones = 0;
+		unsigned char c;
+		const uchar* desc = _feat_index->getPoint(i);
+		for (int j = 0; j < _desc_bytes; j++)
+		{
+			c = desc[j];
+			total_ones += _countOnes(c);
+		}
+		file_descinfo << (_desc_bytes * 8) - total_ones << " " << total_ones << std::endl;
+	}
+	file_descinfo.close();
 }
 
 }
