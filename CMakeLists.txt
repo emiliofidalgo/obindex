@@ -29,7 +29,7 @@ catkin_package(
     INCLUDE_DIRS include
     LIBRARIES binaryindex
     CATKIN_DEPENDS roscpp
-    DEPENDS OpenCV Flann Boost OpenMP
+    DEPENDS OpenCV Boost
 )
 
 ###########
